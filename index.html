@@ -1,376 +1,463 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Radhi - Software Engineer</title>
-    <meta name="author" content="Radhi Bajahaw"/>
-    <meta name="description" content="Radhi Bajahaw - Software Engineer Portfolio"/>
-    <meta property="og:title" content="Radhi Bajahaw - Software Engineer"/>
-    <meta property="og:description" content="Software Engingeer, Frontend, Backend, and DevOps Expert." />
-    <meta property="og:image" content="https://backend.radhi.tech/api/files/pbc_2337082678/214fjpjw69eq4ov/apsvda68lmu_ygr3msr6cv.png" />
-    <meta property="og:url" content="https://radhi.tech" />
-    <link rel="icon" type="image/png"
-          href="https://backend.radhi.tech/api/files/pbc_2337082678/928xsl4zft3fm51/67b3adcd_b0ff_4553_8ad0_59a07750ff42_favicon_jd0qcukk9c.png">
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            overflow: hidden; /* Important to prevent scrollbars when alien is thrown */
-            width: 100%;
-            height: 100%;
-            font-family: Ubuntu, sans-serif !important;
-        }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 0; /* Ensure canvas is behind other content */
-        }
-
-        #alien-container {
-            width: 100px; /* Container can match alien size or be different */
-            height: 100px; /* Adjust if alien image has different aspect ratio */
-            position: absolute; /* Positioned by JS transform */
-            will-change: transform; /* Performance hint */
-            z-index: 1; /* Ensure alien is above canvas */
-        }
-
-        #alien { /* This is the IMG tag */
-            position: absolute; /* Positioned relative to #alien-container */
-            top: 0; 
-            left: 0;
-            cursor: grab;
-            width: 100px;
-            height: auto;
-            animation: gentleSpaceFloat 20s infinite alternate ease-in-out;
-            transform-origin: center center;
-            will-change: transform; /* Image also transforms due to its own animation */
-        }
-
-        /* Pause the IMG's animation when its CONTAINER is being dragged */
-        #alien-container.dragging #alien {
-            cursor: grabbing;
-            animation-play-state: paused !important;
-        }
-
-        @keyframes gentleSpaceFloat {
-            0% {
-                transform: translate(0px, 0px) rotate(0deg) scale(1);
-            }
-            25% {
-                transform: translate(20px, 10px) rotate(10deg) scale(0.95); /* Reduced translation for subtler float */
-            }
-            50% {
-                transform: translate(-5px, 15px) rotate(20deg) scale(1);
-            }
-            75% {
-                transform: translate(5px, -10px) rotate(-10deg) scale(1.05);
-            }
-            100% {
-                transform: translate(0px, 0px) rotate(0deg) scale(1);
-            }
-        }
-
-        .container { /* For text content */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            text-align: center;
-            z-index: 2; /* Text above alien and canvas */
-            animation: floatText 5s ease-in-out infinite;
-            transform: translate(-50%, -50%); /* Ensure this is applied for centering */
-        }
-
-        @keyframes floatText {
-            0% {
-                transform: translate(-50%, -50%) translateY(0);
-            }
-            50% {
-                transform: translate(-50%, -50%) translateY(-5px);
-            }
-            100% {
-                transform: translate(-50%, -50%) translateY(0);
-            }
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin: 0;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            margin: 0.5rem 0;
-            color: #ccc;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-        }
-
-        .links {
-            margin-top: 1rem;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        a {
-            color: #ccc;
-        }
-
-        .links a {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 30px;
-            text-decoration: none;
-            transition: transform 0.3s, background 0.3s;
-        }
-
-
-        .links a:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.3);
-        }
-        small {
-            position: absolute;
-            bottom: 10px; /* Adjusted for better visibility */
-            left: 50%;
-            color: #aaa;
-            text-wrap: nowrap;
-            transform: translateX(-50%); /* Only X transform needed if bottom is set */
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-            z-index: 2;
-        }
-
-    </style>
-</head>
-<body>
-<canvas id="starfield"></canvas>
-<div id="alien-container">
-    <img id="alien"
-        src="https://backend.radhi.tech/api/files/pbc_2337082678/t7ij3bc99w31stg/sm_c6d8f036_1c7b_4c1d_bcb2_9ecff2cd6305_e749sdfgrx.png"
-        alt="Astronaut"
-    > </div>
-<div class="container" id="content">
-    <h1>Radhi Bajahaw</h1>
-    <h2>Software Engineer</h2>
-    <div class="links">
-        <a href="https://portfolio.radhi.tech" target="_blank">Portfolio</a>
-        <a href="https://github.com/Bajahaw" target="_blank">GitHub</a>
-        <a href="https://linkedin.com/in/radhi-bajahaw" target="_blank">LinkedIn</a>
-    </div>
-</div>
-<small>Links not working? See <a href="https://status.radhi.tech">page status</a></small>
-<script>
-    // Starfield animation
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    let width = window.innerWidth, height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-    const stars = [];
-    const numStars = 300;
-    for (let i = 0; i < numStars; i++) {
-        const angle = Math.random() * 2 * Math.PI;
-        const distance = Math.random() * Math.max(width, height) / 1.2; // Ensure stars are spread out
-        stars.push({
-            x: distance * Math.cos(angle),
-            y: distance * Math.sin(angle),
-            size: Math.random() * 1.5 + 0.5,
-            // Add individual rotation speed for a twinkling effect (optional)
-            rotationSpeed: (Math.random() - 0.5) * 0.0002 
-        });
-    }
-    let starfieldCenterX = width / 2;
-    let starfieldCenterY = height / 2;
-    let globalStarRotation = 0;
-
-
-    function animateStars() {
-        globalStarRotation += 0.0001; // Slow global rotation
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = "gray"; // Star color
-
-        stars.forEach(star => {
-            // Apply global rotation and individual star's own subtle rotation if any
-            const rotatedX = star.x * Math.cos(globalStarRotation) - star.y * Math.sin(globalStarRotation);
-            const rotatedY = star.x * Math.sin(globalStarRotation) + star.y * Math.cos(globalStarRotation);
-            
-            ctx.beginPath();
-            ctx.arc(starfieldCenterX + rotatedX, starfieldCenterY + rotatedY, star.size, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        requestAnimationFrame(animateStars);
-    }
-
-    animateStars();
-
-    window.addEventListener('resize', () => {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        starfieldCenterX = width / 2; // Recalculate center on resize
-        starfieldCenterY = height / 2;
-        // Optionally, reinitialize stars or adjust their positions based on new dimensions
-    });
-
-    // Alien drag and drop logic
-    document.addEventListener('DOMContentLoaded', () => {
-        const alienImageEl = document.getElementById('alien');
-        const alienContainerEl = document.getElementById('alien-container');
-
-        if (!alienImageEl || !alienContainerEl) {
-            console.error('Alien elements not found!');
-            return;
-        }
-        
-        // Set initial position for the container (e.g., center of screen)
-        // This ensures it doesn't start at 0,0 if not positioned by CSS
-        const initialContainerX = window.innerWidth / 4 - alienContainerEl.offsetWidth / 2;
-        const initialContainerY = window.innerHeight / 3 - alienContainerEl.offsetHeight / 2; // A bit higher
-        alienContainerEl.style.transform = `translate(${initialContainerX}px, ${initialContainerY}px)`;
-
-
-        let isDragging = false;
-        // For calculating offset of click within the container
-        let clickInContainerX, clickInContainerY;
-
-        // For throw physics
-        let velocityX = 0;
-        let velocityY = 0;
-        let lastMouseX, lastMouseY;
-        let lastTimestamp;
-        const damping = 0.998; // Friction effect (0 to 1, lower is more friction)
-        const throwVelocityScale = 1000; // Increased divisor to reduce throw speed
-        let throwAnimationId;
-
-        // Event listener for starting drag (on the image itself)
-        alienImageEl.addEventListener('mousedown', dragStart);
-        
-        // Global listeners for moving and ending drag
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', dragEnd);
-        document.addEventListener('mouseleave', dragEnd); // End drag if mouse leaves window
-
-
-        function dragStart(e) {
-            e.preventDefault(); 
-
-            if (throwAnimationId) {
-                cancelAnimationFrame(throwAnimationId);
-                throwAnimationId = null;
+    <head>
+        <meta charset="UTF-8" />
+        <
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Radhi - Software Engineer</title>
+        <meta name="author" content="Radhi Bajahaw" />
+        <meta
+            name="description"
+            content="Radhi Bajahaw - Software Engineer Portfolio"
+        />
+        <meta property="og:title" content="Radhi Bajahaw - Software Engineer" />
+        <meta
+            property="og:description"
+            content="Software Engingeer, Frontend, Backend, and DevOps Expert."
+        />
+        <meta
+            property="og:image"
+            content="https://backend.radhi.tech/main-og.png"
+        />
+        <meta property="og:url" content="https://radhi.tech" />
+        <link
+            rel="icon"
+            type="image/png"
+            href="https://backend.radhi.tech/favicon.png"
+        />
+        <style>
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                background: #000;
+                overflow: hidden; /* Important to prevent scrollbars when alien is thrown */
+                width: 100%;
+                height: 100%;
+                font-family: Ubuntu, sans-serif !important;
             }
 
-            // Get container's current position
-            const containerRect = alienContainerEl.getBoundingClientRect();
-            
-            // Calculate where the mouse click occurred relative to the container's top-left
-            clickInContainerX = e.clientX - containerRect.left;
-            clickInContainerY = e.clientY - containerRect.top;
+            canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 0; /* Ensure canvas is behind other content */
+            }
 
-            isDragging = true;
-            alienContainerEl.classList.add('dragging'); // Pauses CSS animation on alienImageEl via CSS rule
+            #alien-container {
+                width: 100px; /* Container can match alien size or be different */
+                height: 100px; /* Adjust if alien image has different aspect ratio */
+                position: absolute; /* Positioned by JS transform */
+                will-change: transform; /* Performance hint */
+                z-index: 1; /* Ensure alien is above canvas */
+            }
 
-            lastMouseX = e.clientX;
-            lastMouseY = e.clientY;
-            lastTimestamp = performance.now();
-            velocityX = 0;
-            velocityY = 0;
-        }
+            #alien {
+                /* This is the IMG tag */
+                position: absolute; /* Positioned relative to #alien-container */
+                top: 0;
+                left: 0;
+                cursor: grab;
+                width: 100px;
+                height: auto;
+                animation: gentleSpaceFloat 20s infinite alternate ease-in-out;
+                transform-origin: center center;
+                will-change: transform; /* Image also transforms due to its own animation */
+            }
 
-        function drag(e) {
-            if (isDragging) {
-                e.preventDefault();
+            /* Pause the IMG's animation when its CONTAINER is being dragged */
+            #alien-container.dragging #alien {
+                cursor: grabbing;
+                animation-play-state: paused !important;
+            }
 
-                // New top-left for the container
-                let newContainerX = e.clientX - clickInContainerX;
-                let newContainerY = e.clientY - clickInContainerY;
-                
-                const now = performance.now();
-                const dt = (now - lastTimestamp) / 1000; // delta time in seconds
+            @keyframes gentleSpaceFloat {
+                0% {
+                    transform: translate(0px, 0px) rotate(0deg) scale(1);
+                }
+                25% {
+                    transform: translate(20px, 10px) rotate(10deg) scale(0.95); /* Reduced translation for subtler float */
+                }
+                50% {
+                    transform: translate(-5px, 15px) rotate(20deg) scale(1);
+                }
+                75% {
+                    transform: translate(5px, -10px) rotate(-10deg) scale(1.05);
+                }
+                100% {
+                    transform: translate(0px, 0px) rotate(0deg) scale(1);
+                }
+            }
 
-                if (dt > 0) { 
-                    velocityX = (e.clientX - lastMouseX) / dt / throwVelocityScale; 
-                    velocityY = (e.clientY - lastMouseY) / dt / throwVelocityScale;
+            .container {
+                /* For text content */
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                text-align: center;
+                z-index: 2; /* Text above alien and canvas */
+                animation: floatText 5s ease-in-out infinite;
+                transform: translate(
+                    -50%,
+                    -50%
+                ); /* Ensure this is applied for centering */
+            }
+
+            @keyframes floatText {
+                0% {
+                    transform: translate(-50%, -50%) translateY(0);
+                }
+                50% {
+                    transform: translate(-50%, -50%) translateY(-5px);
+                }
+                100% {
+                    transform: translate(-50%, -50%) translateY(0);
+                }
+            }
+
+            h1 {
+                font-size: 3rem;
+                margin: 0;
+                color: #fff;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                margin: 0.5rem 0;
+                color: #ccc;
+                text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            }
+
+            .links {
+                margin-top: 1rem;
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            }
+
+            a {
+                color: #ccc;
+            }
+
+            .links a {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 8px 15px;
+                border-radius: 30px;
+                text-decoration: none;
+                transition:
+                    transform 0.3s,
+                    background 0.3s;
+            }
+
+            .links a:hover {
+                transform: scale(1.1);
+                background: rgba(255, 255, 255, 0.3);
+            }
+            small {
+                position: absolute;
+                bottom: 10px; /* Adjusted for better visibility */
+                left: 50%;
+                color: #aaa;
+                text-wrap: nowrap;
+                transform: translateX(
+                    -50%
+                ); /* Only X transform needed if bottom is set */
+                text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+                z-index: 2;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="starfield"></canvas>
+        <div id="alien-container">
+            <img
+                id="alien"
+                src="https://backend.radhi.tech/astronaut.png"
+                alt="Astronaut"
+            />
+        </div>
+        <div class="container" id="content">
+            <h1>Radhi Bajahaw</h1>
+            <h2>Software Engineer</h2>
+            <div class="links">
+                <a href="https://portfolio.radhi.tech" target="_blank"
+                    >Portfolio</a
+                >
+                <a href="https://github.com/Bajahaw" target="_blank">GitHub</a>
+                <a href="https://linkedin.com/in/radhi-bajahaw" target="_blank"
+                    >LinkedIn</a
+                >
+            </div>
+        </div>
+        <small
+            >Links not working? See
+            <a href="https://status.radhi.tech">page status</a></small
+        >
+        <script>
+            // Starfield animation
+            const canvas = document.getElementById("starfield");
+            const ctx = canvas.getContext("2d");
+            let width = window.innerWidth,
+                height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            const stars = [];
+            const numStars = 300;
+            for (let i = 0; i < numStars; i++) {
+                const angle = Math.random() * 2 * Math.PI;
+                const distance =
+                    (Math.random() * Math.max(width, height)) / 1.2; // Ensure stars are spread out
+                stars.push({
+                    x: distance * Math.cos(angle),
+                    y: distance * Math.sin(angle),
+                    size: Math.random() * 1.5 + 0.5,
+                    // Add individual rotation speed for a twinkling effect (optional)
+                    rotationSpeed: (Math.random() - 0.5) * 0.0002,
+                });
+            }
+            let starfieldCenterX = width / 2;
+            let starfieldCenterY = height / 2;
+            let globalStarRotation = 0;
+
+            function animateStars() {
+                globalStarRotation += 0.0001; // Slow global rotation
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = "gray"; // Star color
+
+                stars.forEach((star) => {
+                    // Apply global rotation and individual star's own subtle rotation if any
+                    const rotatedX =
+                        star.x * Math.cos(globalStarRotation) -
+                        star.y * Math.sin(globalStarRotation);
+                    const rotatedY =
+                        star.x * Math.sin(globalStarRotation) +
+                        star.y * Math.cos(globalStarRotation);
+
+                    ctx.beginPath();
+                    ctx.arc(
+                        starfieldCenterX + rotatedX,
+                        starfieldCenterY + rotatedY,
+                        star.size,
+                        0,
+                        Math.PI * 2,
+                    );
+                    ctx.fill();
+                });
+                requestAnimationFrame(animateStars);
+            }
+
+            animateStars();
+
+            window.addEventListener("resize", () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                starfieldCenterX = width / 2; // Recalculate center on resize
+                starfieldCenterY = height / 2;
+                // Optionally, reinitialize stars or adjust their positions based on new dimensions
+            });
+
+            // Alien drag and drop logic
+            document.addEventListener("DOMContentLoaded", () => {
+                const alienImageEl = document.getElementById("alien");
+                const alienContainerEl =
+                    document.getElementById("alien-container");
+
+                if (!alienImageEl || !alienContainerEl) {
+                    console.error("Alien elements not found!");
+                    return;
                 }
 
-                lastMouseX = e.clientX;
-                lastMouseY = e.clientY;
-                lastTimestamp = now;
+                // Set initial position for the container (e.g., center of screen)
+                // This ensures it doesn't start at 0,0 if not positioned by CSS
+                const initialContainerX =
+                    window.innerWidth / 4 - alienContainerEl.offsetWidth / 2;
+                const initialContainerY =
+                    window.innerHeight / 3 - alienContainerEl.offsetHeight / 2; // A bit higher
+                alienContainerEl.style.transform = `translate(${initialContainerX}px, ${initialContainerY}px)`;
 
-                setContainerTranslate(newContainerX, newContainerY);
-            }
-        }
+                let isDragging = false;
+                // For calculating offset of click within the container
+                let clickInContainerX, clickInContainerY;
 
-        function dragEnd(e) {
-            if (!isDragging) return;
+                // For throw physics
+                let velocityX = 0;
+                let velocityY = 0;
+                let lastMouseX, lastMouseY;
+                let lastTimestamp;
+                const damping = 0.998; // Friction effect (0 to 1, lower is more friction)
+                const throwVelocityScale = 1000; // Increased divisor to reduce throw speed
+                let throwAnimationId;
 
-            isDragging = false;
-            alienContainerEl.classList.remove('dragging'); // Resumes CSS animation on alienImageEl
+                // Event listeners for starting drag (mouse and touch)
+                alienImageEl.addEventListener("mousedown", dragStart);
+                alienImageEl.addEventListener("touchstart", dragStart, {
+                    passive: false,
+                });
 
-            if (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1) { // Adjusted threshold
-                // Get current position from transform for the container
-                const currentTransform = window.getComputedStyle(alienContainerEl).transform;
-                let currentTx = 0, currentTy = 0;
+                // Global listeners for moving and ending drag
+                document.addEventListener("mousemove", drag);
+                document.addEventListener("touchmove", drag, {
+                    passive: false,
+                });
+                document.addEventListener("mouseup", dragEnd);
+                document.addEventListener("touchend", dragEnd);
+                document.addEventListener("mouseleave", dragEnd); // End drag if mouse leaves window
 
-                if (currentTransform && currentTransform !== 'none') {
-                    // DOMMatrix is more robust for parsing transform
-                    const matrix = new DOMMatrix(currentTransform);
-                    currentTx = matrix.m41; // translateX
-                    currentTy = matrix.m42; // translateY
-                } else {
-                    // Fallback if somehow no transform (should not happen if drag occurred)
-                    // This part would need currentX, currentY from the drag function if it were the case
-                    // but setContainerTranslate ensures a transform is set.
-                    const rect = alienContainerEl.getBoundingClientRect();
-                    currentTx = rect.left;
-                    currentTy = rect.top;
+                function dragStart(e) {
+                    e.preventDefault();
+
+                    if (throwAnimationId) {
+                        cancelAnimationFrame(throwAnimationId);
+                        throwAnimationId = null;
+                    }
+
+                    const clientX = e.clientX || e.touches[0].clientX;
+                    const clientY = e.clientY || e.touches[0].clientY;
+
+                    // Get container's current position
+                    const containerRect =
+                        alienContainerEl.getBoundingClientRect();
+
+                    // Calculate where the click/touch occurred relative to the container's top-left
+                    clickInContainerX = clientX - containerRect.left;
+                    clickInContainerY = clientY - containerRect.top;
+
+                    isDragging = true;
+                    alienContainerEl.classList.add("dragging"); // Pauses CSS animation on alienImageEl via CSS rule
+
+                    lastMouseX = clientX;
+                    lastMouseY = clientY;
+                    lastTimestamp = performance.now();
+                    velocityX = 0;
+                    velocityY = 0;
                 }
-                throwAnimation(currentTx, currentTy);
-            }
-            // If not throwing, the animation on alienImageEl is already unpaused by classList.remove('dragging')
-        }
 
-        function setContainerTranslate(xPos, yPos) {
-            alienContainerEl.style.transform = `translate(${xPos}px, ${yPos}px)`;
-        }
+                function drag(e) {
+                    if (isDragging) {
+                        e.preventDefault();
 
-        function throwAnimation(startX, startY) {
-            let x = startX;
-            let y = startY;
+                        const clientX = e.clientX || e.touches[0].clientX;
+                        const clientY = e.clientY || e.touches[0].clientY;
 
-            function animateFrame() {
-                x += velocityX;
-                y += velocityY;
+                        // New top-left for the container
+                        let newContainerX = clientX - clickInContainerX;
+                        let newContainerY = clientY - clickInContainerY;
 
-                velocityX *= damping;
-                velocityY *= damping;
+                        const now = performance.now();
+                        const dt = (now - lastTimestamp) / 1000; // delta time in seconds
 
-                const containerRect = alienContainerEl.getBoundingClientRect();
-                if (x < -200) { x = window.innerWidth + 200 - containerRect.width; velocityX *= 0.5; } // Bounce with energy loss
-                if (x + containerRect.width > window.innerWidth + 200) { x = -200; velocityX *= 0.5; }
-                if (y < 0) { y = 0; velocityY *= -0.5; }
-                if (y + containerRect.height > window.innerHeight) { y = window.innerHeight - containerRect.height; velocityY *= -0.5; }
+                        if (dt > 0) {
+                            velocityX =
+                                (clientX - lastMouseX) /
+                                dt /
+                                throwVelocityScale;
+                            velocityY =
+                                (clientY - lastMouseY) /
+                                dt /
+                                throwVelocityScale;
+                        }
 
+                        lastMouseX = clientX;
+                        lastMouseY = clientY;
+                        lastTimestamp = now;
 
-                setContainerTranslate(x, y);
+                        setContainerTranslate(newContainerX, newContainerY);
+                    }
+                }
 
-                if (Math.abs(velocityX) < 0.05 && Math.abs(velocityY) < 0.05) { // Adjusted threshold
-                    cancelAnimationFrame(throwAnimationId);
-                    throwAnimationId = null;
-                    // Alien image animation is already running due to class removal in dragEnd
-                } else {
+                function dragEnd(e) {
+                    if (!isDragging) return;
+
+                    isDragging = false;
+                    alienContainerEl.classList.remove("dragging"); // Resumes CSS animation on alienImageEl
+
+                    if (
+                        Math.abs(velocityX) > 0.1 ||
+                        Math.abs(velocityY) > 0.1
+                    ) {
+                        // Adjusted threshold
+                        // Get current position from transform for the container
+                        const currentTransform =
+                            window.getComputedStyle(alienContainerEl).transform;
+                        let currentTx = 0,
+                            currentTy = 0;
+
+                        if (currentTransform && currentTransform !== "none") {
+                            // DOMMatrix is more robust for parsing transform
+                            const matrix = new DOMMatrix(currentTransform);
+                            currentTx = matrix.m41; // translateX
+                            currentTy = matrix.m42; // translateY
+                        } else {
+                            // Fallback if somehow no transform (should not happen if drag occurred)
+                            // This part would need currentX, currentY from the drag function if it were the case
+                            // but setContainerTranslate ensures a transform is set.
+                            const rect =
+                                alienContainerEl.getBoundingClientRect();
+                            currentTx = rect.left;
+                            currentTy = rect.top;
+                        }
+                        throwAnimation(currentTx, currentTy);
+                    }
+                    // If not throwing, the animation on alienImageEl is already unpaused by classList.remove('dragging')
+                }
+
+                function setContainerTranslate(xPos, yPos) {
+                    alienContainerEl.style.transform = `translate(${xPos}px, ${yPos}px)`;
+                }
+
+                function throwAnimation(startX, startY) {
+                    let x = startX;
+                    let y = startY;
+
+                    function animateFrame() {
+                        x += velocityX;
+                        y += velocityY;
+
+                        velocityX *= damping;
+                        velocityY *= damping;
+
+                        const containerRect =
+                            alienContainerEl.getBoundingClientRect();
+                        if (x < -200) {
+                            x = window.innerWidth + 200 - containerRect.width;
+                            velocityX *= 0.5;
+                        } // Bounce with energy loss
+                        if (x + containerRect.width > window.innerWidth + 200) {
+                            x = -200;
+                            velocityX *= 0.5;
+                        }
+                        if (y < 0) {
+                            y = 0;
+                            velocityY *= -0.5;
+                        }
+                        if (y + containerRect.height > window.innerHeight) {
+                            y = window.innerHeight - containerRect.height;
+                            velocityY *= -0.5;
+                        }
+
+                        setContainerTranslate(x, y);
+
+                        if (
+                            Math.abs(velocityX) < 0.05 &&
+                            Math.abs(velocityY) < 0.05
+                        ) {
+                            // Adjusted threshold
+                            cancelAnimationFrame(throwAnimationId);
+                            throwAnimationId = null;
+                            // Alien image animation is already running due to class removal in dragEnd
+                        } else {
+                            throwAnimationId =
+                                requestAnimationFrame(animateFrame);
+                        }
+                    }
                     throwAnimationId = requestAnimationFrame(animateFrame);
                 }
-            }
-            throwAnimationId = requestAnimationFrame(animateFrame);
-        }
-    });
-</script>
-</body>
+            });
+        </script>
+    </body>
 </html>
