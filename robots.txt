@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bajahaw.com/sitemap.xml
