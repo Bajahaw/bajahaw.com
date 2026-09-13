@@ -2,7 +2,6 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Radhi - Software Engineer</title>
         <meta name="author" content="Radhi Bajahaw" />
@@ -26,15 +25,29 @@
             type="image/png"
             href="/favicon.png"
         />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
+            rel="preload"
+            href="/fonts/space-grotesk-400.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
         />
-        <link rel="stylesheet" href="/vt.css" />
-        <script src="/vt.js"></script>
+        <link
+            rel="stylesheet"
+            href="/vt.css"
+            media="print"
+            onload="this.media='all'"
+        />
+        <script src="/vt.js" defer></script>
         <style>
+            @font-face {
+                font-family: "Space Grotesk";
+                font-style: normal;
+                font-weight: 400;
+                font-display: swap;
+                src: url("/fonts/space-grotesk-400.woff2") format("woff2");
+            }
+
             body,
             html {
                 margin: 0;
@@ -219,12 +232,24 @@
     </head>
     <body>
         <canvas id="starfield"></canvas>
-        <img id="cosmos" src="cosmos.png" alt="Cosmos background" />
+        <img
+            id="cosmos"
+            src="cosmos.webp"
+            alt=""
+            width="1920"
+            height="1080"
+            decoding="async"
+            fetchpriority="low"
+        />
         <div id="alien-container">
             <img
                 id="alien"
                 src="astronaut.webp"
                 alt="Astronaut"
+                width="360"
+                height="540"
+                decoding="async"
+                fetchpriority="low"
             />
         </div>
         <div class="container" id="content">
