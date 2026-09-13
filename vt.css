@@ -1,0 +1,61 @@
+@media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+        navigation: auto;
+    }
+
+    ::view-transition-old(root) {
+        animation: vt-out-up 0.28s ease both;
+    }
+
+    ::view-transition-new(root) {
+        animation: vt-in-up 0.28s ease both;
+    }
+
+    html:active-view-transition-type(back)::view-transition-old(root) {
+        animation-name: vt-out-down;
+    }
+
+    html:active-view-transition-type(back)::view-transition-new(root) {
+        animation-name: vt-in-down;
+    }
+
+    ::view-transition-group(name) {
+        animation-duration: 0.36s;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 1;
+    }
+
+    ::view-transition-old(name),
+    ::view-transition-new(name) {
+        animation-duration: 0.28s;
+        animation-timing-function: ease;
+    }
+}
+
+@keyframes vt-out-up {
+    to {
+        translate: 0 -5vh;
+        opacity: 0;
+    }
+}
+
+@keyframes vt-in-up {
+    from {
+        translate: 0 5vh;
+        opacity: 0;
+    }
+}
+
+@keyframes vt-out-down {
+    to {
+        translate: 0 5vh;
+        opacity: 0;
+    }
+}
+
+@keyframes vt-in-down {
+    from {
+        translate: 0 -5vh;
+        opacity: 0;
+    }
+}

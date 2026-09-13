@@ -43,6 +43,8 @@ a {
     font-weight: 500;
     color: #fff;
     text-decoration: none;
+    width: fit-content;
+    view-transition-name: name;
 }
 
 h1 {
