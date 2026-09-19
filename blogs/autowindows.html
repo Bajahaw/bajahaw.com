@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Building blazing fast autonomous desktop control with Jev | Radhi Bajahaw</title>
+        <meta name="author" content="Radhi Bajahaw" />
+        <meta
+            name="description"
+            content="Inside Auto Windows, my desktop agent that uses Windows controls, Jev decisions, and a recovery planner to keep ordinary actions simple."
+        />
+        <meta property="og:title" content="Building blazing fast autonomous desktop control with Jev" />
+        <meta
+            property="og:description"
+            content="Inside Auto Windows, my desktop agent that uses Windows controls, Jev decisions, and a recovery planner to keep ordinary actions simple."
+        />
+        <meta property="og:type" content="article" />
+        <meta property="article:published_time" content="2026-09-19" />
+        <meta property="article:author" content="Radhi Bajahaw" />
+        <meta property="og:url" content="https://bajahaw.com/blogs/autowindows.html" />
+        <link rel="canonical" href="https://bajahaw.com/blogs/autowindows.html" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link
+            rel="preload"
+            href="/fonts/space-grotesk-400.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="stylesheet"
+            href="/vt.css"
+            media="print"
+            onload="this.media='all'"
+        />
+        <link rel="stylesheet" href="/blogs/style.css" />
+        <script src="/vt.js" defer></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <nav class="nav">
+                <a class="brand" href="/">Radhi Bajahaw</a>
+                <a href="/blogs/">Blog</a>
+            </nav>
+            <article>
+                <header>
+                    <h1>Building blazing fast autonomous desktop control with Jev</h1>
+                    <p class="meta">
+                        <time datetime="2026-09-19">19 September 2026</time>
+                    </p>
+                </header>
+                <p>
+                    I want to give my computer a task and watch it get on with it.
+                    Open the app, find the field, type the text. Waiting through
+                    another round of reasoning just to press Tab feels ridiculous.
+                </p>
+                <p>
+                    That's what I'm working on with Auto Windows, a desktop agent
+                    written in C# on .NET 10. Blazing fast is the goal. The part
+                    that interests me is how much work we can remove from each
+                    ordinary step before reaching for a bigger model.
+                </p>
+                <p>
+                    The current design starts with a fairly obvious question:
+                    if Windows can tell us where a button is and what it says,
+                    why ask a model to find it in a picture?
+                </p>
+
+                <h2>Use what Windows already knows</h2>
+                <p>
+                    Auto Windows reads the active window through Windows UI
+                    Automation. It collects the controls an application exposes,
+                    including buttons, editable fields, tabs, and menu items.
+                    Each observation includes their labels, roles, and positions.
+                </p>
+                <p>
+                    The controller builds a set of possible actions from those
+                    controls and adds keyboard options such as Tab and Windows
+                    search. Jev, accessed through OpenRouter's Decisions API,
+                    chooses what to do next.
+                </p>
+                <p>
+                    That gives the model a smaller job. It chooses an action
+                    that the controller has already defined, rather than writing
+                    a fresh script or inventing coordinates for every click.
+                    The response is validated before anything runs. An unknown
+                    action gets rejected.
+                </p>
+                <p>
+                    Mouse and keyboard input go through native Windows APIs.
+                    The controller then observes the desktop again, so the next
+                    decision uses the interface that's there now.
+                </p>
+
+                <h2>Jev is the secret sauce</h2>
+                <p>
+                    <a href="https://openrouter.ai/typesafe/jev-1.13">Jev 1.13</a>
+                    is a structured decision model from TypeSafe, and the first
+                    of its System One models. It's the model I built the ordinary
+                    decision loop around. What I like about it is the fit: I
+                    have a set of actions the desktop can actually execute, and
+                    I want a model to choose one. That is exactly the question
+                    I'm sending to Jev.
+                </p>
+                <p>
+                    In the same request, the controller asks it to assess the
+                    risk of each executable option. The response gives me a
+                    selected action, confidence, choice probabilities, and risk
+                    answers that the application can validate and use directly.
+                    There is no paragraph to interpret before the mouse can move.
+                </p>
+                <p>
+                    This is the part I'm excited about. Jev gets the recurring
+                    decisions, while the recovery planner handles the awkward
+                    cases. I want the common path to stay this focused even as
+                    the tasks get more complicated.
+                </p>
+
+                <h2>Let another model do the writing</h2>
+                <p>
+                    Choosing a field and deciding what to put in it are different
+                    jobs. Jev handles the first. When a task needs new text, a
+                    separate writing model receives the task, the selected field,
+                    and the relevant UI context. Its response contains only the
+                    text to insert.
+                </p>
+                <p>
+                    If I supply the exact text myself, the controller uses that
+                    instead. There is no reason to ask a model to rewrite a
+                    sentence I already gave it.
+                </p>
+                <p>
+                    The controller keeps a short history of executed actions,
+                    including text it actually entered. That gives the next
+                    decision context for avoiding duplicate typing. Generating
+                    a paragraph and inserting it are separate events, and the
+                    history needs to reflect that.
+                </p>
+
+                <h2>Getting stuck is part of the job</h2>
+                <p>
+                    A desktop rarely stays as tidy as the first observation.
+                    Menus open, windows change, and sometimes the action you
+                    need isn't in the available options.
+                </p>
+                <p>
+                    Auto Windows has a recovery planner for those moments. Jev
+                    can ask for help directly, and the controller also detects
+                    repeated actions, repeated waiting, and observations that
+                    aren't changing. The planner receives the current UI context
+                    and recent history, then proposes a short flow of up to
+                    eight actions.
+                </p>
+                <p>
+                    Pointer targets in that flow must match observed controls.
+                    Keyboard navigation is still available when controls are
+                    missing. After recovery, control returns to Jev. A window
+                    transition interrupts the remaining recovery actions so the
+                    agent can observe the new window before continuing.
+                </p>
+                <p>
+                    Completion gets a second look too. When Jev thinks the task
+                    is done, the planner checks that claim against the observation.
+                    Both models can still be wrong. Agreement is useful, but it
+                    isn't independent proof that the task succeeded.
+                </p>
+
+                <h2>A fast wrong click is still a wrong click</h2>
+                <p>
+                    Before acting on an observed control, the controller checks
+                    that its label, role, and bounds still match. It also checks
+                    whether the target belongs to the expected window at that
+                    point on the screen. If the button moved or another window
+                    covered it, the old action gets discarded.
+                </p>
+                <p>
+                    Review mode is the default. It asks for approval before
+                    executing an action. There is also a YOLO mode for continuous
+                    execution, but actions flagged as risky still require review.
+                    Jev's control actions also require review when their labels
+                    contain words such as Send or Delete, regardless of the
+                    model's assessment. Missing risk information defaults to
+                    review as well.
+                </p>
+                <p>
+                    Those checks reduce risk; they don't make an arbitrary
+                    desktop task safe. I still want a clear way to interrupt
+                    the agent. The interface has a Stop button and an Escape
+                    shortcut for that.
+                </p>
+
+                <h2>Where the speed should come from</h2>
+                <p>
+                    Ordinary steps don't need screenshot interpretation or a
+                    newly generated action plan. The recovery planner runs when
+                    needed, and the writing model is used when a field needs
+                    generated text. That's the design behind the speed goal,
+                    not a measured performance result.
+                </p>
+                <p>
+                    Network latency still matters. So does the target app.
+                    Windows UI Automation can be slow or expose very little,
+                    especially in interfaces built around custom graphics. The
+                    observer has time limits, and missing controls leave the
+                    agent with keyboard navigation and recovery rather than
+                    permission to guess where things are.
+                </p>
+                <p>
+                    The current agent doesn't send screenshots to these models.
+                    It does send the task, UI context, and typing text through
+                    OpenRouter after explicit consent. Local mouse control
+                    doesn't mean local inference, and that distinction matters
+                    when choosing what to let it work on.
+                </p>
+                <p>
+                    I want desktop automation that spends less time deciding
+                    how to press a button and more time finishing the task.
+                    Auto Windows is my attempt at that: give routine actions a
+                    small, concrete decision to make, and ask for more help
+                    when the desktop stops cooperating.
+                </p>
+                <p>
+                    The source is on
+                    <a href="https://github.com/Bajahaw/auto-windows">GitHub</a>.
+                    It runs on Windows with the .NET 10 SDK. Build it with
+                    <code>dotnet build</code>, start it with <code>dotnet run</code>,
+                    and configure your OpenRouter key in the agent settings.
+                    Start in Review mode so you can see what Jev chooses before
+                    letting it act.
+                </p>
+            </article>
+            <a class="back" href="/blogs/">All posts</a>
+        </div>
+    </body>
+</html>
