@@ -100,6 +100,19 @@ h1 {
     font-size: 0.95rem;
 }
 
+.note {
+    display: inline-block;
+    margin-left: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    color: #8a8a8a;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    vertical-align: 1px;
+}
+
 .posts {
     list-style: none;
     margin: 2.5rem 0 0;
@@ -156,8 +169,51 @@ article p {
     font-size: 1.05rem;
 }
 
+article ul {
+    margin: 0 0 1.15rem;
+    padding-left: 1.25rem;
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+article li + li {
+    margin-top: 0.25rem;
+}
+
+article li::marker {
+    color: #666;
+}
+
 article a {
     color: #ddd;
+}
+
+article a[href^="http"]::after {
+    content: "";
+    display: inline-block;
+    width: 0.62em;
+    height: 0.62em;
+    margin-left: 0.45em;
+    vertical-align: 0.14em;
+    background-color: #bbb;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M9 7h8v8'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M9 7h8v8'/%3E%3C/svg%3E");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+article a[href^="http"]:hover::after {
+    background-color: #fff;
+}
+
+article abbr[title] {
+    text-decoration: underline dotted rgba(255, 255, 255, 0.3);
+    text-underline-offset: 3px;
+    cursor: help;
 }
 
 .back {

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Looking for a better AI chat? - Radhi Bajahaw</title>
+        <meta name="author" content="Radhi Bajahaw" />
+        <meta
+            name="description"
+            content="I wanted a self-hosted AI chat that was minimal, fast, and private. Nothing fit, so I learned Go and built one."
+        />
+        <meta
+            property="og:title"
+            content="Looking for a better AI chat? - Radhi Bajahaw"
+        />
+        <meta
+            property="og:description"
+            content="I wanted a self-hosted AI chat that was minimal, fast, and private. Nothing fit, so I learned Go and built one."
+        />
+        <meta
+            property="og:url"
+            content="https://bajahaw.com/blogs/better-ai-chat.html"
+        />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link
+            rel="preload"
+            href="/fonts/space-grotesk-400.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin
+        />
+        <link
+            rel="stylesheet"
+            href="/vt.css"
+            media="print"
+            onload="this.media='all'"
+        />
+        <link rel="stylesheet" href="/blogs/style.css" />
+        <script src="/vt.js" defer></script>
+    </head>
+    <body>
+        <div class="wrap">
+            <nav class="nav">
+                <a class="brand" href="/">Radhi Bajahaw</a>
+                <a href="/blogs/">Blog</a>
+            </nav>
+            <article>
+                <header>
+                    <h1>Looking for a better AI chat?</h1>
+                    <p class="meta">
+                        <time datetime="2026-10-24">24 October 2026</time>
+                        <span class="note">Not written by AI</span>
+                    </p>
+                </header>
+                <p>
+                    I just made the best and most lightweight AI chat I've used.
+                    Check it out at
+                    <a href="https://github.com/bajahaw/ai-ui.git"
+                        >github.com/bajahaw/ai-ui</a
+                    >.
+                </p>
+                <p>
+                    I had been looking for a while and kept getting disappointed
+                    with the existing options. Maybe my bar was a bit high, or
+                    maybe no such perfect software exists. So I decided to make
+                    my own.
+                </p>
+                <p>
+                    I had been trying to self-host my own chat for a long time.
+                    After trying OpenWebUI and crashing my server multiple times
+                    with <abbr title="Out of memory">OOM</abbr> errors, I decided
+                    to move to something more efficient. I scanned GitHub for projects that fit my poor
+                    server's needs, but honestly, most good-looking chats are
+                    built with Node.js and friends, which are RAM hogs when
+                    you're self-hosting on a tight budget.
+                </p>
+                <p>My most wanted things were as follows:</p>
+                <ul>
+                    <li>Minimal and efficient.</li>
+                    <li>Good, clean UI.</li>
+                    <li>Private.</li>
+                    <li>Useful.</li>
+                </ul>
+                <p>
+                    I had been jealous of the
+                    <a href="https://t3.chat">t3.chat</a> UI for a while, and of
+                    <a href="https://claude.ai">claude.ai</a> for how useful and
+                    extensible it is with
+                    <abbr title="Model Context Protocol">MCPs</abbr> and skills.
+                    I decided to combine
+                    the best of both worlds, in tiny, fast-bundled images, and
+                    self-host it for myself. I also decided I would learn Go
+                    from scratch specifically for this job.
+                </p>
+                <p>
+                    After three months of development and experimenting with Go,
+                    I felt the app was solid enough to use exclusively and leave
+                    ChatGPT for good. Now, after more than a year, I am quite
+                    happy with the current state, and confident enough to share
+                    it with the world.
+                </p>
+                <p>
+                    So, if you're looking for a better AI chat, check it out at
+                    <a href="https://github.com/bajahaw/ai-ui.git"
+                        >github.com/bajahaw/ai-ui</a
+                    >.
+                </p>
+            </article>
+            <a class="back" href="/blogs/">← All posts</a>
+        </div>
+    </body>
+</html>
